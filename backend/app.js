@@ -1,5 +1,6 @@
 const express = require("express");
 const userRoutes = require("./routes/userRoutes");
+const authenticate = require("./middleware/authMiddleware");
 
 const app = express();
 
@@ -10,6 +11,7 @@ app.get("/", (req, res) => {
         message: "E-Commerce API is running"
     });
 });
+
 
 app.use("/api/users", userRoutes);
 

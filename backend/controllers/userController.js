@@ -31,7 +31,20 @@ const getAllUsers = async (req, res) => {
 
 const getUserById = async (req, res) => {
     try {
-        const user = await userService.getUserById(req.params.id);
+        const requestedUserId = Number(req.params.id);
+
+        if (
+            req.user.role !== "admin" &&
+            Number(req.user.id) !== requestedUserId
+        ) {
+            return res.status(403).json({
+                message: "You are not allowed to access this user"
+            });
+        }
+
+        const user = await userService.getUserById(
+            requestedUserId
+        );
 
         res.status(200).json({
             user
@@ -45,8 +58,19 @@ const getUserById = async (req, res) => {
 
 const updateUser = async (req, res) => {
     try {
+        const requestedUserId = Number(req.params.id);
+
+        if (
+            req.user.role !== "admin" &&
+            Number(req.user.id) !== requestedUserId
+        ) {
+            return res.status(403).json({
+                message: "You are not allowed to update this user"
+            });
+        }
+
         const user = await userService.updateUser(
-            req.params.id,
+            requestedUserId,
             req.body
         );
 
@@ -60,10 +84,22 @@ const updateUser = async (req, res) => {
         });
     }
 };
-
 const deleteUser = async (req, res) => {
     try {
-        const user = await userService.deleteUser(req.params.id);
+        const requestedUserId = Number(req.params.id);
+
+        if (
+            req.user.role !== "admin" &&
+            Number(req.user.id) !== requestedUserId
+        ) {
+            return res.status(403).json({
+                message: "You are not allowed to delete this user"
+            });
+        }
+
+        const user = await userService.deleteUser(
+            requestedUserId
+        );
 
         res.status(200).json({
             message: "User deleted successfully",
@@ -75,7 +111,6 @@ const deleteUser = async (req, res) => {
         });
     }
 };
-
 const loginUser = async (req, res) => {
     try {
         const { email, password } = req.body;

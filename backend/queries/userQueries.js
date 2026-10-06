@@ -98,20 +98,25 @@ const getUserByEmail = async (email) => {
 };
 
 const updateUser = async (id, userData) => {
-    const {
-        name,
-        email,
-        number
-    } = userData;
+    const fields = [];
+    const values = [];
+    let parameterIndex = 1;
+
+    for (const [field, value] of Object.entries(userData)) {
+        fields.push(`${field} = $${parameterIndex}`);
+        values.push(value);
+        parameterIndex++;
+    }
+
+    fields.push(`updated_at = NOW()`);
+
+    values.push(id);
 
     const query = `
         UPDATE users
         SET
-            name = $1,
-            email = $2,
-            number = $3,
-            updated_at = NOW()
-        WHERE id = $4
+            ${fields.join(", ")}
+        WHERE id = $${parameterIndex}
         RETURNING
             id,
             name,
@@ -120,17 +125,8 @@ const updateUser = async (id, userData) => {
             role,
             status,
             is_deleted,
-            deleted_at,
-            created_at,
-            updated_at;
+            deleted_at;
     `;
-
-    const values = [
-        name,
-        email,
-        number,
-        id
-    ];
 
     const result = await pool.query(query, values);
 

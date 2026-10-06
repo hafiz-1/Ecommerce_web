@@ -117,9 +117,11 @@ const loginUser = async (req, res) => {
 
         const result = await userService.loginUser(
             email,
-            password
+            password,
+          
         );
 
+        console.log("User logged in successfully", result);
         res.status(200).json(result);
     } catch (error) {
         res.status(401).json({

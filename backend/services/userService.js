@@ -52,9 +52,37 @@ const updateUser = async (id, userData) => {
         throw new Error("User not found");
     }
 
-    const updatedUser = await userQueries.updateUser(id, userData);
+    const allowedFields = ["name", "email", "number"];
 
-    return updatedUser;
+    const fieldsToUpdate = {};
+
+    for (const field of allowedFields) {
+        if (userData[field] !== undefined) {
+            fieldsToUpdate[field] = userData[field];
+        }
+    }
+
+    if (Object.keys(fieldsToUpdate).length === 0) {
+        throw new Error("No valid fields provided for update");
+    }
+
+    // Check email duplicacy
+    if (
+        fieldsToUpdate.email &&
+        fieldsToUpdate.email !== existingUser.email
+    ) {
+        const existingEmailUser =
+            await userQueries.getUserByEmail(fieldsToUpdate.email);
+
+        if (existingEmailUser) {
+            throw new Error("Email already exists");
+        }
+    }
+
+    return await userQueries.updateUser(
+        id,
+        fieldsToUpdate
+    );
 };
 
 const deleteUser = async (id) => {

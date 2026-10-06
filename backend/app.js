@@ -1,5 +1,6 @@
 const express = require("express");
 const userRoutes = require("./routes/userRoutes");
+const productRoutes = require("./routes/productRoutes");
 const authenticate = require("./middleware/authMiddleware");
 
 const app = express();
@@ -14,5 +15,6 @@ app.get("/", (req, res) => {
 
 
 app.use("/api/users", userRoutes);
+app.use("/api/products", productRoutes);
 
 module.exports = app;

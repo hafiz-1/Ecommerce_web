@@ -18,4 +18,12 @@ router.delete("/:id", authenticate, userController.deleteUser);
 
 router.post("/login", userController.loginUser);
 
+router.patch("/:id/approve",authenticate, authorizeRoles("admin"), userController.approveVendor);
+
+router.patch("/:id/reject", authenticate, authorizeRoles("admin"), userController.rejectVendor);
+
+router.patch("/:id/suspend", authenticate, authorizeRoles("admin"), userController.suspendUser);
+
+router.patch("/:id/activate", authenticate, authorizeRoles("admin"), userController.activateUser);
+
 module.exports = router;

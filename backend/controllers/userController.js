@@ -130,11 +130,83 @@ const loginUser = async (req, res) => {
     }
 };
 
+const approveVendor = async (req, res) => {
+    try {
+        const vendorId = Number(req.params.id);
+
+        const vendor = await userService.approveVendor(vendorId);
+
+        res.status(200).json({
+            message: "Vendor approved successfully",
+            vendor
+        });
+    } catch (error) {
+        res.status(400).json({
+            message: error.message
+        });
+    }
+};
+
+const rejectVendor = async (req, res) => {
+    try {
+        const vendorId = Number(req.params.id);
+
+        const vendor = await userService.rejectVendor(vendorId);
+
+        res.status(200).json({
+            message: "Vendor rejected successfully",
+            vendor
+        });
+    } catch (error) {
+        res.status(400).json({
+            message: error.message
+        });
+    }
+};
+
+const suspendUser = async (req, res) => {
+    try {
+        const userId = Number(req.params.id);
+
+        const user = await userService.suspendUser(userId);
+
+        res.status(200).json({
+            message: "Account suspended successfully",
+            user
+        });
+    } catch (error) {
+        res.status(400).json({
+            message: error.message
+        });
+    }
+};
+
+const activateUser = async (req, res) => {
+    try {
+        const userId = Number(req.params.id);
+
+        const user = await userService.activateUser(userId);
+
+        res.status(200).json({
+            message: "Account activated successfully",
+            user
+        });
+    } catch (error) {
+        res.status(400).json({
+            message: error.message
+        });
+    }
+};
+
 module.exports = {
     createUser,
     getAllUsers,
     getUserById,
     updateUser,
     deleteUser,
-    loginUser
+    loginUser,
+    approveVendor,
+    rejectVendor,
+    suspendUser,
+    activateUser
 };

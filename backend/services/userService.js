@@ -147,11 +147,89 @@ const loginUser = async (email, password) => {
     };
 };
 
+const approveVendor = async (id) => {
+    const user = await userQueries.getUserById(id);
+
+    if (!user) {
+        throw new Error("User not found");
+    }
+
+    if (user.role !== "vendor") {
+        throw new Error("User is not a vendor");
+    }
+
+    if (user.status !== "pending") {
+        throw new Error("Vendor is not pending approval");
+    }
+
+    return await userQueries.updateUserStatus(id, "active");
+};
+
+const rejectVendor = async (id) => {
+    const user = await userQueries.getUserById(id);
+
+    if (!user) {
+        throw new Error("User not found");
+    }
+
+    if (user.role !== "vendor") {
+        throw new Error("User is not a vendor");
+    }
+
+    if (user.status !== "pending") {
+        throw new Error("Vendor is not pending approval");
+    }
+
+    return await userQueries.updateUserStatus(id, "rejected");
+};
+
+const suspendUser = async (id) => {
+    const user = await userQueries.getUserById(id);
+
+    if (!user) {
+        throw new Error("User not found");
+    }
+
+    if (user.is_deleted) {
+        throw new Error("User is already deleted");
+    }
+
+    if (user.status !== "active") {
+        throw new Error("Only active accounts can be suspended");
+    }
+
+    return await userQueries.updateUserStatus(id, "suspended");
+};
+
+const activateUser = async (id) => {
+    const user = await userQueries.getUserById(id);
+
+    if (!user) {
+        throw new Error("User not found");
+    }
+
+    if (user.is_deleted) {
+        throw new Error("User is already deleted");
+    }
+
+    if (user.status !== "suspended") {
+        throw new Error("Only suspended accounts can be activated");
+    }
+
+    return await userQueries.updateUserStatus(id, "active");
+    console.log("User activated successfully", user);
+};
+
+
 module.exports = {
     createUser,
     getAllUsers,
     getUserById,
     updateUser,
     deleteUser,
-    loginUser
+    loginUser,
+    approveVendor,
+    rejectVendor,
+    suspendUser,
+    activateUser
 };

@@ -159,11 +159,37 @@ const softDeleteUser = async (id) => {
     return result.rows[0];
 };
 
+const updateUserStatus = async (id, status) => {
+    const query = `
+        UPDATE users
+        SET
+            status = $1,
+            updated_at = NOW()
+        WHERE id = $2
+        RETURNING
+            id,
+            name,
+            email,
+            number,
+            role,
+            status,
+            is_deleted,
+            deleted_at;
+    `;
+
+    const result = await pool.query(query, [status, id]);
+
+    return result.rows[0];
+};
+
+
 module.exports = {
     createUser,
     getAllUsers,
     getUserById,
     getUserByEmail,
     updateUser,
-    softDeleteUser
+    softDeleteUser,
+    updateUserStatus,
+    
 };

@@ -71,7 +71,10 @@ const updateProduct = async (id, vendorId, productData) => {
         throw new Error("Product not found");
     }
 
-    if (product.vendor_id !== vendorId) {
+    console.log("Logged in vendor:", vendorId);
+    console.log("Product owner:", product.vendor_id);
+
+    if (Number(product.vendor_id) !== Number(vendorId)) {
         throw new Error("You are not allowed to update this product");
     }
 
@@ -117,7 +120,7 @@ const deleteProduct = async (id, vendorId) => {
         throw new Error("Product not found");
     }
 
-    if (product.vendor_id !== vendorId) {
+    if (Number(product.vendor_id) !== Number(vendorId))  {
         throw new Error("You are not allowed to delete this product");
     }
 
